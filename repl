@@ -1,0 +1,352 @@
+#!/usr/bin/env node --es_staging --harmony_shipping
+try { require('source-map-support').install() }catch(_){}
+const Path = require('path')
+const os = require('os')
+const vm = require('vm')
+const fs = require('fs')
+const repl = require('repl')
+const F = require('./dist/functional')
+const {inspect} = require('util')
+
+
+const TERM = process.env.TERM
+const nocolorf = function(_, s){return s}
+const TERM_DUMB = 0
+const TERM_COLOR_BASIC = 1
+const TERM_COLOR_256 = 2
+const termtype = (
+  (!TERM || TERM == 'dumb') ?      TERM_DUMB :
+  TERM.indexOf('256color') != -1 ? TERM_COLOR_256 :
+                                   TERM_COLOR_BASIC )
+const styles256 = {
+  // prompt: '1;48;5;26',
+  prompt:  '1;38;5;111',
+  comment: '38;5;244',
+  error:   '38;5;203',
+  strlit:  '38;5;157',
+  baselit: '38;5;219',
+}
+const stylesBasic = {
+  prompt:  '1;96',
+  comment: '90',
+  error:   '1;91',
+}
+const basicTo256StyleMap = {
+  32: 'strlit',  // green
+  33: 'baselit', // yellow
+}
+// function colorf(style :string, s :string) :string
+const colorf = (termtype == TERM_DUMB ? nocolorf :
+                (styles => function(style, s) {
+                  const y = styles[style]
+                  return y ? '\x1b[' + y + 'm' + s + '\x1b[0m' : s
+                })(termtype == TERM_COLOR_256 ? styles256 : stylesBasic))
+
+const color    = process.stdout.isTTY ? colorf : nocolorf
+const colorerr = process.stderr.isTTY ? colorf : nocolorf
+
+
+function repr(v) {
+  return (
+    typeof v == 'object' &&
+    v.length === undefined &&
+    v.size === undefined &&
+    F.isSeq(v) ?
+      F.collect(F.take(50, v)) :
+      v
+  )
+}
+
+
+// If the error is that we've unexpectedly ended the input,
+// then let the user try to recover by adding more input.
+function isRecoverableError(e, self) {
+  if (e && e.name === 'SyntaxError') {
+    var message = e.message;
+    if (message === 'Unterminated template literal' ||
+        message === 'Missing } in template expression') {
+      self._inTemplateLiteral = true;
+      return true;
+    }
+
+    if (message.startsWith('Unexpected end of input') ||
+        message.startsWith('missing ) after argument list') ||
+        message.startsWith('Unexpected token'))
+      return true;
+
+    if (message === 'Invalid or unexpected token')
+      return !bailOnIllegalToken(self.lineParser);
+  }
+  return false;
+}
+
+
+function eval(input, context, filename, callback) {
+  const maxRetries = 10
+  let result, retry = false, retries = 0
+  do {
+    try {
+      result = vm.runInContext(input, context, {
+        filename: filename,
+        displayErrors: true,
+      })
+    } catch (e) {
+      if (e.name == 'ReferenceError') {
+        throw colorerr('error', e.message)
+      } else if (e.message.startsWith('missing ) after argument list')) {
+        console.log('retry')
+        input += ')'
+        retry = true
+      } else if (isRecoverableError(e, this)) {
+        return callback(new repl.Recoverable(e));
+      } else {
+        if (e.message) {
+          e.message = colorerr('error', e.message)
+        }
+        throw e
+      }
+    }
+  } while (retry)
+  callback(null, result);
+}
+
+function writer(output) {
+  let s = inspect(repr(output), {colors: color !== nocolorf})
+  if (termtype == TERM_COLOR_256 && color !== nocolorf) {
+    s = s.replace(/\x1b\[([0-9;]+)m/g, function(all, code) {
+      if (code == '39') {
+        return all
+      }
+      let subcode = styles256[basicTo256StyleMap[code]]
+      return '\x1b[' + (subcode || code) + 'm'
+    })
+  }
+  return s
+}
+
+
+function uniqueArray(a) {
+  return Array.from(new Set(a))
+}
+
+
+function configureHistory(r, filename) {
+  try {
+    var stat = fs.statSync(filename);
+    const hist = fs.readFileSync(filename, 'utf-8').split('\n')
+                  .filter(line => line.trim().length)
+                  .reverse()
+    r.rli.history = uniqueArray(hist)
+    r.rli.historyIndex = -1; // will be incremented before pop
+  } catch (e) {
+    r.rli.history = []
+  }
+
+  const fd = fs.openSync(filename, 'a');
+  process.on('exit', function() {
+    fs.closeSync(fd);
+  });
+
+  r.rli.addListener('line', function(code) {
+    if (code && code != '.history') {
+      if (code.trim().length) {
+        fs.write(fd, code + '\n', function(){});
+      }
+    } else {
+      r.rli.historyIndex++;
+      r.rli.history.pop();
+    }
+  });
+
+  r.commands['history'] = {
+    help : 'Show the history',
+    action : function() {
+      var out = [];
+      r.rli.history.forEach(function(v, k) {
+        out.push(v);
+      });
+      r.outputStream.write(out.reverse().join('\n') + '\n');
+      r.displayPrompt();
+    }
+  };
+};
+
+var data
+
+
+function main() {
+  console.log(color('comment',
+    "Hello. Here's something to try when getting started:\n" + 
+    "filter(city => city[0] == 'S',\n"+
+    "       map(p => p.city, values(data.people)))"))
+
+  const histfile = Path.join(os.homedir(), '.functional-repl.history')
+  process.env.NODE_REPL_HISTORY = histfile
+
+  const r = repl.start({
+    historySize: 1000,
+    eval,
+    prompt: color('prompt','❯')+' ', // ✱
+    writer,
+  })
+  configureHistory(r, histfile)
+  r.on('reset', initMutateContext)
+  initMutateContext(r.context)
+}
+
+
+function initMutateContext(ctx) {
+  Object.keys(F).forEach(k => {
+    Object.defineProperty(ctx, k, {
+      configurable: false,
+      enumerable: true,
+      value: F[k]
+    });
+  })
+
+  // allow `show` to be overwritten or deleted
+  ctx.show = function show(message, v) {
+    if (arguments.length == 1) { v = message; message = undefined }
+    v = inspect(repr(v), {colors:color !== nocolorf})
+    message !== undefined ? console.log(message, v) : console.log(v)
+  }
+
+  ctx.data = Object.assign({}, data)
+}
+
+data = {
+  companies: new Set([
+    {name:'Microsoft', founded: {year: 1975, month: 4}},
+    {name:'Apple',     founded: {year: 1976, month: 4}},
+    {name:'Google',    founded: {year: 1998, month: 9}},
+    {name:'Facebook',  founded: {year: 2004, month: 2}},
+    {name:'Spotify',   founded: {year: 2006, month: 4}},
+    {name:'Dropbox',   founded: {year: 2007, month: 6}},
+  ]),
+
+  people: new Map([
+    ['bobby',  {name: 'Bob',    email: "bobby@microsoft.com", city: "Seattle", age: 28 }],
+    ['ann3',   {name: 'Anne',   email: "ann3@apple.com", city: "Cupertino", age: 29 }],
+    ['rob',    {name: 'Robin',  email: "rob@alphabet.com", city: "Mountainview", age: 33 }],
+    ["amy",    {name: "Amy",    email: "amy@fb.com", city: "Menlo Park", age: 42 }],
+    ["lars",   {name: "Lars",   email: "lars@spotify.com", city: "Stockholm", age: 34 }],
+    ["samson", {name: "Samson", email: "samson@dropbox.com", city: "San Francisco", age: 20 }],
+    // data generated using https://www.mockaroo.com/
+    ["jreed0", {name: "Joan", email: "jstephens0@merriam-webster.com", city: "Piraju", age: 47}],
+    ["igibson1", {name: "Irene", email: "icastillo1@geocities.jp", city: "Kadujajar", age: 19}],
+    ["sjohnston2", {name: "Susan", email: "sgraham2@census.gov", city: "Bourges", age: 49}],
+    ["ncarroll3", {name: "Nancy", email: "nlawrence3@hp.com", city: "Karlskoga", age: 37}],
+    ["aparker4", {name: "Arthur", email: "atucker4@hud.gov", city: "Altos", age: 49}],
+    ["mmurphy5", {name: "Margaret", email: "mwelch5@cdbaby.com", city: "General Arenales",
+     age: 28}],
+    ["adavis6", {name: "Amanda", email: "aweaver6@aboutads.info", city: "Kosai-shi", age: 18}],
+    ["tmyers7", {name: "Terry", email: "tmurray7@lycos.com", city: "Victoria", age: 44}],
+    ["twagner8", {name: "Tina", email: "tdunn8@miitbeian.gov.cn", city: "Emnambithi-Ladysmith",
+     age: 27}],
+    ["idixon9", {name: "Irene", email: "iwoods9@ted.com", city: "Shangcunba", age: 39}],
+    ["jmillsa", {name: "Johnny", email: "jfranklina@istockphoto.com", city: "Jiaojie", age: 31}],
+    ["tgordonb", {name: "Timothy", email: "tstewartb@newyorker.com", city: "Siyang", age: 29}],
+    ["bromeroc", {name: "Benjamin", email: "bmorrisc@bloomberg.com", city: "Itápolis", age: 56}],
+    ["cwestd", {name: "Catherine", email: "cgibsond@utexas.edu", city: "Vokhaïkó", age: 36}],
+    ["jrobinsone", {name: "Janet", email: "jharrisone@taobao.com", city: "Ahar", age: 37}],
+    ["rmorenof", {name: "Roy", email: "rhudsonf@latimes.com", city: "Qiangtou", age: 63}],
+    ["acollinsg", {name: "Anthony", email: "alewisg@booking.com", city: "Changlong", age: 62}],
+    ["gwalkerh", {name: "Gloria", email: "gmorrish@weather.com", city: "Strogino", age: 41}],
+    ["jmedinai", {name: "Jane", email: "jhawkinsi@storify.com", city: "Purwosari", age: 53}],
+    ["jgrantj", {name: "Jose", email: "jfullerj@surveymonkey.com", city: "Wielka Wieś", age: 46}],
+    ["rmoorek", {name: "Robin", email: "rramosk@google.ca", city: "Nianyushan", age: 38}],
+    ["kmorganl", {name: "Kathleen", email: "klynchl@businessinsider.com", city: "Les Abymes",
+     age: 53}],
+    ["hbowmanm", {name: "Helen", email: "hmorrisonm@scribd.com", city: "Svetlograd", age: 58}],
+    ["rrossn", {name: "Ruby", email: "rnelsonn@lulu.com", city: "Fonseca", age: 65}],
+    ["wsullivano", {name: "Walter", email: "wmendozao@bandcamp.com", city: "Quintão", age: 40}],
+    ["cwhitep", {name: "Carlos", email: "csimpsonp@amazon.com", city: "Hengqu", age: 28}],
+    ["mjacobsq", {name: "Melissa", email: "msullivanq@zdnet.com", city: "Banjar Banyualit",
+     age: 47}],
+    ["jchapmanr", {name: "Jean", email: "jtuckerr@1688.com", city: "Yuecheng", age: 24}],
+    ["lolsons", {name: "Lillian", email: "ldunns@jiathis.com", city: "Vorontsovka", age: 60}],
+    ["agomezt", {name: "Anthony", email: "aturnert@oaic.gov.au", city: "Karangsari", age: 23}],
+    ["shudsonu", {name: "Sean", email: "smeyeru@netlog.com", city: "Semuda", age: 54}],
+    ["hbowmanv", {name: "Harry", email: "hbradleyv@woothemes.com", city: "Wenchi", age: 20}],
+    ["dbishopw", {name: "Debra", email: "drogersw@vinaora.com", city: "Banbalah", age: 61}],
+    ["mgilbertx", {name: "Martha", email: "mmoorex@seesaa.net", city: "Nanshi", age: 46}],
+    ["krobertsony", {name: "Kimberly", email: "kfreemany@nsw.gov.au", city: "Gaojiazhuang",
+     age: 38}],
+    ["kspencerz", {name: "Kathryn", email: "khowardz@dyndns.org", city: "Bantawora", age: 28}],
+    ["wsanchez10", {name: "Wanda", email: "wchapman10@vistaprint.com", city: "Vänersborg",
+     age: 25}],
+    ["gcruz11", {name: "Gerald", email: "gmurray11@desdev.cn", city: "Sidzina", age: 32}],
+    ["jclark12", {name: "Justin", email: "jprice12@godaddy.com", city: "Nagua", age: 41}],
+    ["wwallace13", {name: "Willie", email: "whunt13@fema.gov", city: "Hougong", age: 35}],
+    ["smorales14", {name: "Sean", email: "scooper14@about.me", city: "Magdalena", age: 39}],
+    ["jgraham15", {name: "Jeffrey", email: "jarnold15@quantcast.com", city: "Byala", age: 24}],
+    ["erose16", {name: "Emily", email: "epowell16@aol.com", city: "Vecpiebalga", age: 45}],
+    ["hfields17", {name: "Helen", email: "hmyers17@vimeo.com", city: "Hucheng", age: 20}],
+    ["bcollins18", {name: "Betty", email: "bhill18@usa.gov", city: "Ponggeok", age: 54}],
+    ["rfreeman19", {name: "Raymond", email: "rmorgan19@google.com.hk", city: "Nelspruit",
+     age: 36}],
+    ["scampbell1a", {name: "Stephanie", email: "shall1a@netvibes.com", city: "Nong Khae",
+     age: 24}],
+    ["pgomez1b", {name: "Phyllis", email: "plawson1b@gmpg.org", city: "Kérkyra", age: 53}],
+    ["jwood1c", {name: "Judith", email: "jweaver1c@squidoo.com", city: "Hai Riêng", age: 37}],
+    ["wgraham1d", {name: "Wayne", email: "whayes1d@lycos.com", city: "Iza", age: 64}],
+    ["ataylor1e", {name: "Amanda", email: "amendoza1e@multiply.com", city: "Ostrowite", age: 63}],
+    ["shunter1f", {name: "Susan", email: "shall1f@ihg.com", city: "Potolo", age: 60}],
+    ["mfields1g", {name: "Mark", email: "mstevens1g@ihg.com", city: "Marāveh Tappeh", age: 34}],
+    ["mfreeman1h", {name: "Melissa", email: "malexander1h@amazon.com", city: "Amper", age: 25}],
+    ["rroberts1i", {name: "Randy", email: "raustin1i@cornell.edu", city: "Consuelo", age: 24}],
+    ["rmiller1j", {name: "Randy", email: "rrobinson1j@e-recht24.de", city: "Yushugou", age: 62}],
+    ["pdiaz1k", {name: "Phyllis", email: "polson1k@businessinsider.com", city: "Caeté", age: 40}],
+    ["tramos1l", {name: "Todd", email: "tstewart1l@so-net.ne.jp", city: "Lebedyn", age: 46}],
+    ["ccrawford1m", {name: "Christine", email: "cvasquez1m@irs.gov", city: "Sobradinho", age: 62}],
+    ["eruiz1n", {name: "Emily", email: "ebarnes1n@vinaora.com", city: "Guanghai", age: 51}],
+    ["amorales1o", {name: "Anthony", email: "aoliver1o@tiny.cc", city: "Helie", age: 43}],
+    ["cwallace1p", {name: "Catherine", email: "criley1p@disqus.com", city: "Los Córdobas",
+     age: 44}],
+    ["jnichols1q", {name: "Joyce", email: "jwagner1q@qq.com", city: "Trincomalee", age: 53}],
+    ["kperkins1r", {name: "Kenneth", email: "kpeters1r@techcrunch.com", city: "Ostrów Mazowiecka",
+     age: 35}],
+    ["areynolds1s", {name: "Anthony", email: "afranklin1s@delicious.com", city: "Birao", age: 26}],
+    ["rmartin1t", {name: "Raymond", email: "rnichols1t@mapy.cz", city: "Santa Cecília", age: 37}],
+    ["hhenderson1u", {name: "Howard", email: "hross1u@nytimes.com", city: "Mkushi", age: 56}],
+    ["iburton1v", {name: "Irene", email: "imorgan1v@goodreads.com", city: "Hongdun", age: 41}],
+    ["mstevens1w", {name: "Margaret", email: "mmendoza1w@cpanel.net", city: "Temirtau", age: 50}],
+    ["athompson1x", {name: "Andrew", email: "aprice1x@ow.ly", city: "Tamamura", age: 62}],
+    ["sdunn1y", {name: "Steve", email: "sbrooks1y@cargocollective.com", city: "Saryshaghan",
+     age: 40}],
+    ["prussell1z", {name: "Phyllis", email: "pwagner1z@gmpg.org", city: "Anchorage", age: 23}],
+    ["rhansen20", {name: "Roy", email: "rdixon20@reuters.com", city: "Damnica", age: 27}],
+    ["jcook21", {name: "Julie", email: "jturner21@csmonitor.com", city: "Offa", age: 40}],
+    ["rtaylor22", {name: "Ruth", email: "rhart22@who.int", city: "Menglie", age: 23}],
+    ["bprice23", {name: "Betty", email: "brivera23@shutterfly.com", city: "Mellila", age: 55}],
+    ["mross24", {name: "Melissa", email: "mgarza24@wikia.com", city: "Villefranche-sur-Mer",
+     age: 24}],
+    ["jarnold25", {name: "Jesse", email: "jthompson25@ucoz.com", city: "Hejia", age: 41}],
+    ["cdaniels26", {name: "Christopher", email: "cperkins26@archive.org", city: "Guilhabreu",
+     age: 56}],
+    ["randerson27", {name: "Ruth", email: "rharper27@imageshack.us", city: "Joroan", age: 41}],
+    ["wmyers28", {name: "William", email: "wmitchell28@omniture.com", city: "Pantaibesar", age: 62}],
+    ["dray29", {name: "Douglas", email: "dblack29@mtv.com", city: "Orahovac", age: 23}],
+    ["jaustin2a", {name: "Janice", email: "jnelson2a@dell.com", city: "Munka-Ljungby", age: 53}],
+    ["mcruz2b", {name: "Marilyn", email: "mkim2b@squidoo.com", city: "Mwene-Ditu", age: 64}],
+    ["smason2c", {name: "Sharon", email: "srussell2c@boston.com", city: "Ibara", age: 62}],
+    ["rarmstrong2d", {name: "Ronald", email: "randrews2d@tinyurl.com", city: "Tamansari", age: 47}],
+    ["lmiller2e", {name: "Lois", email: "lreyes2e@taobao.com", city: "Tiglauigan", age: 50}],
+    ["rcunningham2f", {name: "Ryan", email: "rperez2f@squidoo.com", city: "Danxia", age: 32}],
+    ["dgriffin2g", {name: "Denise", email: "ddaniels2g@nydailynews.com", city: "Xiawa", age: 54}],
+    ["dhunt2h", {name: "Donna", email: "dsnyder2h@huffingtonpost.com", city: "Aoufous", age: 57}],
+    ["wmorrison2i", {name: "Wayne", email: "wburns2i@a8.net", city: "Dobra", age: 28}],
+    ["jshaw2j", {name: "Judy", email: "jolson2j@netvibes.com", city: "Kurihashi", age: 37}],
+    ["mgrant2k", {name: "Michael", email: "mdixon2k@dion.ne.jp", city: "Gonābād", age: 50}],
+    ["aday2l", {name: "Alan", email: "asanders2l@nydailynews.com", city: "Matsubara", age: 50}],
+    ["bwalker2m", {name: "Brandon", email: "bmedina2m@1und1.de", city: "Główczyce", age: 51}],
+    ["kpayne2n", {name: "Kathryn", email: "kreid2n@techcrunch.com", city: "Pingshan", age: 36}],
+    ["cstephens2o", {name: "Craig", email: "cwilliams2o@who.int", city: "Marabá", age: 55}],
+    ["fdean2p", {name: "Fred", email: "fford2p@netscape.com", city: "Oslob", age: 50}],
+    ["sburke2q", {name: "Shirley", email: "saustin2q@unesco.org", 
+     city: "Saint-Lambert-de-Lauzon", age: 48}],
+    ["jking2r", {name: "Joyce", email: "jtucker2r@prnewswire.com", city: "Bonoua", age: 58}],
+  ]),
+}
+
+main()

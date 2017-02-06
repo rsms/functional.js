@@ -1,0 +1,745 @@
+
+
+
+var d = {
+  "cols": [
+    "name",
+    "email",
+    "age",
+    "city"
+  ],
+  "data": [
+    [
+      "Amy",
+      "Integer.in.magna@velit.com",
+      42,
+      "Sedgewick"
+    ],
+    [
+      "Samson",
+      "tempor.erat@vestibulumneque.com",
+      20,
+      "Scunthorpe"
+    ],
+    [
+      "Nigel",
+      "in.magna@orciluctuset.co.uk",
+      64,
+      "Cañas"
+    ],
+    [
+      "Ginger",
+      "quis.accumsan.convallis@tristiquesenectuset.co.uk",
+      34,
+      "Parkland County"
+    ],
+    [
+      "Portia",
+      "amet.luctus.vulputate@ornare.co.uk",
+      37,
+      "San Fele"
+    ],
+    [
+      "Kessie",
+      "in.dolor@faucibus.com",
+      24,
+      "Novoli"
+    ],
+    [
+      "Germaine",
+      "sociosqu.ad.litora@porttitor.com",
+      32,
+      "Dover"
+    ],
+    [
+      "Kaden",
+      "velit@magnaaneque.edu",
+      33,
+      "Lathuy"
+    ],
+    [
+      "Ifeoma",
+      "enim.Nunc.ut@taciti.net",
+      68,
+      "Castanhal"
+    ],
+    [
+      "Hanae",
+      "libero@FuscemollisDuis.org",
+      57,
+      "Anand"
+    ],
+    [
+      "Britanney",
+      "velit@risusInmi.com",
+      52,
+      "Gagliano del Capo"
+    ],
+    [
+      "Kiara",
+      "cubilia@ipsumCurabiturconsequat.co.uk",
+      17,
+      "San Pedro"
+    ],
+    [
+      "Selma",
+      "in@vestibulumMaurismagna.com",
+      29,
+      "Arbroath"
+    ],
+    [
+      "Sharon",
+      "elit@euismodurnaNullam.ca",
+      38,
+      "Ribeirão das Neves"
+    ],
+    [
+      "Finn",
+      "lorem.auctor@convallisest.com",
+      78,
+      "Bunbury"
+    ],
+    [
+      "Daphne",
+      "sit.amet.faucibus@massaQuisque.net",
+      30,
+      "Ahmadnagar"
+    ],
+    [
+      "Elizabeth",
+      "et.malesuada.fames@Fuscemilorem.com",
+      74,
+      "Santarcangelo di Romagna"
+    ],
+    [
+      "Aristotle",
+      "Proin.non.massa@luctusvulputatenisi.net",
+      64,
+      "Russell"
+    ],
+    [
+      "Charde",
+      "ligula@dolor.com",
+      73,
+      "Bevagna"
+    ],
+    [
+      "Kylan",
+      "Nullam.ut@felisorci.ca",
+      52,
+      "Maria"
+    ],
+    [
+      "Lars",
+      "nec.mauris@ornaresagittisfelis.ca",
+      84,
+      "Bad Dürkheim"
+    ],
+    [
+      "Nola",
+      "metus.Vivamus@at.ca",
+      18,
+      "Amstetten"
+    ],
+    [
+      "Damon",
+      "ac.mattis.velit@tellussemmollis.net",
+      76,
+      "Vertou"
+    ],
+    [
+      "Allegra",
+      "odio.semper@arcueuodio.com",
+      59,
+      "Jundiaí"
+    ],
+    [
+      "Genevieve",
+      "Duis@justonecante.net",
+      27,
+      "Cagnes-sur-Mer"
+    ],
+    [
+      "Lacy",
+      "tincidunt.vehicula@ultricesaauctor.com",
+      20,
+      "Maisires"
+    ],
+    [
+      "Vaughan",
+      "Ut@mitemporlorem.org",
+      38,
+      "Nives"
+    ],
+    [
+      "Scarlet",
+      "Donec@Nullaeu.edu",
+      57,
+      "Völkermarkt"
+    ],
+    [
+      "Diana",
+      "vitae.risus.Duis@augueeu.co.uk",
+      83,
+      "Nandyal"
+    ],
+    [
+      "Jenette",
+      "ipsum.primis@tinciduntvehicula.com",
+      63,
+      "Buzet"
+    ],
+    [
+      "Hope",
+      "non.lacinia@elitAliquamauctor.ca",
+      36,
+      "Stralsund"
+    ],
+    [
+      "Jamalia",
+      "Integer.tincidunt.aliquam@dignissimtempor.ca",
+      40,
+      "Deerlijk"
+    ],
+    [
+      "Sierra",
+      "molestie.pharetra.nibh@Aeneansedpede.net",
+      46,
+      "Baltasound"
+    ],
+    [
+      "Clinton",
+      "nec.leo@anteipsumprimis.com",
+      82,
+      "Tufara"
+    ],
+    [
+      "Ferris",
+      "lacus.Nulla@Integertinciduntaliquam.ca",
+      70,
+      "Kington"
+    ],
+    [
+      "Buffy",
+      "semper.cursus.Integer@duiaugue.net",
+      49,
+      "Lamont"
+    ],
+    [
+      "Aquila",
+      "ultrices.a.auctor@ipsumnonarcu.co.uk",
+      67,
+      "Houdemont"
+    ],
+    [
+      "Angela",
+      "sed.libero@aliquetPhasellus.org",
+      73,
+      "Curon Venosta/Graun im Vinschgau"
+    ],
+    [
+      "Charity",
+      "aliquet.sem@maurisa.com",
+      77,
+      "Chambord"
+    ],
+    [
+      "Brock",
+      "quis.accumsan@sitametnulla.ca",
+      45,
+      "Dijon"
+    ],
+    [
+      "Michael",
+      "lacinia.orci@Nullam.edu",
+      32,
+      "Scarborough"
+    ],
+    [
+      "Aspen",
+      "facilisis@adipiscingMaurismolestie.com",
+      50,
+      "Ehein"
+    ],
+    [
+      "Dylan",
+      "vitae.aliquet.nec@sagittis.ca",
+      39,
+      "Dundee"
+    ],
+    [
+      "Nero",
+      "orci.Donec.nibh@odio.co.uk",
+      65,
+      "Alençon"
+    ],
+    [
+      "Hyacinth",
+      "erat.Sed.nunc@quistristiqueac.ca",
+      19,
+      "Quilicura"
+    ],
+    [
+      "Merritt",
+      "Nullam@nonante.co.uk",
+      59,
+      "Gattatico"
+    ],
+    [
+      "Hakeem",
+      "sit@antelectus.com",
+      37,
+      "Saint-Étienne-du-Rouvray"
+    ],
+    [
+      "Keiko",
+      "Curabitur@Seddiam.edu",
+      83,
+      "Lakeshore"
+    ],
+    [
+      "Cole",
+      "Cum.sociis.natoque@libero.edu",
+      48,
+      "Olsztyn"
+    ],
+    [
+      "Clark",
+      "nisl.sem.consequat@tellus.co.uk",
+      84,
+      "Hall in Tirol"
+    ],
+    [
+      "Yen",
+      "mi.eleifend@elementumsem.ca",
+      28,
+      "Sant'Omero"
+    ],
+    [
+      "Renee",
+      "eget@euultricessit.org",
+      51,
+      "Cambridge"
+    ],
+    [
+      "Jane",
+      "lorem@augue.net",
+      39,
+      "Baarle-Hertog"
+    ],
+    [
+      "Yoshio",
+      "ac@enimSed.org",
+      63,
+      "Gloucester"
+    ],
+    [
+      "Thane",
+      "aliquet@sagittisDuisgravida.co.uk",
+      28,
+      "Dubuisson"
+    ],
+    [
+      "Bradley",
+      "imperdiet@Nullaeu.co.uk",
+      79,
+      "Foligno"
+    ],
+    [
+      "Wendy",
+      "non.luctus@Aliquamadipiscinglobortis.net",
+      85,
+      "Saint-Hilarion"
+    ],
+    [
+      "Ryan",
+      "dui@miDuis.co.uk",
+      43,
+      "Liedekerke"
+    ],
+    [
+      "Mannix",
+      "dui@iaculis.com",
+      29,
+      "Lasne"
+    ],
+    [
+      "Noelani",
+      "Nam.porttitor@adipiscinglacus.org",
+      72,
+      "Teodoro Schmidt"
+    ],
+    [
+      "Katelyn",
+      "eget.lacus@sem.com",
+      61,
+      "Belgaum"
+    ],
+    [
+      "Erin",
+      "dolor@sollicitudin.com",
+      43,
+      "Kozhikode"
+    ],
+    [
+      "Chancellor",
+      "Mauris.non@semvitaealiquam.net",
+      30,
+      "Basildon"
+    ],
+    [
+      "Jayme",
+      "pharetra.Nam.ac@enimNunc.co.uk",
+      67,
+      "Surat"
+    ],
+    [
+      "Jamal",
+      "Nulla@eutellus.org",
+      36,
+      "Herne"
+    ],
+    [
+      "Allistair",
+      "ante@Sed.co.uk",
+      53,
+      "Feilding"
+    ],
+    [
+      "Alan",
+      "Cum@suscipitest.net",
+      62,
+      "Motta Camastra"
+    ],
+    [
+      "Adena",
+      "sed.consequat.auctor@sitamet.edu",
+      40,
+      "Pedace"
+    ],
+    [
+      "Bert",
+      "dis@venenatisa.edu",
+      40,
+      "Ospedaletto Lodigiano"
+    ],
+    [
+      "Sonia",
+      "vel.venenatis.vel@pulvinararcu.ca",
+      26,
+      "Vöcklabruck"
+    ],
+    [
+      "Colorado",
+      "mi.lorem.vehicula@maurisMorbi.co.uk",
+      42,
+      "ZŽtrud-Lumay"
+    ],
+    [
+      "Eliana",
+      "morbi@blanditNamnulla.co.uk",
+      32,
+      "Wichita"
+    ],
+    [
+      "Reece",
+      "lacus.Quisque.imperdiet@ultricesposuere.co.uk",
+      59,
+      "Spresiano"
+    ],
+    [
+      "Amity",
+      "Etiam@Nunc.com",
+      29,
+      "Lethbridge"
+    ],
+    [
+      "Emerson",
+      "lectus.a@lectusante.co.uk",
+      65,
+      "Davenport"
+    ],
+    [
+      "Elijah",
+      "eu.augue@dictumProin.net",
+      59,
+      "Yeotmal"
+    ],
+    [
+      "Hanna",
+      "venenatis.lacus.Etiam@mi.ca",
+      60,
+      "Granada"
+    ],
+    [
+      "Kathleen",
+      "ut@etmalesuada.org",
+      61,
+      "Sant'Elpidio a Mare"
+    ],
+    [
+      "Vance",
+      "tellus.non@etnetus.com",
+      42,
+      "Alix"
+    ],
+    [
+      "Inez",
+      "mi.enim@ad.ca",
+      47,
+      "Oss"
+    ],
+    [
+      "Clare",
+      "semper@nuncrisusvarius.org",
+      67,
+      "Frignano"
+    ],
+    [
+      "Stewart",
+      "non.magna.Nam@erat.co.uk",
+      41,
+      "Kendal"
+    ],
+    [
+      "Latifah",
+      "consequat@Vivamusnonlorem.org",
+      73,
+      "Cisterna di Latina"
+    ],
+    [
+      "Duncan",
+      "quis@consectetuer.org",
+      39,
+      "Cottbus"
+    ],
+    [
+      "Caldwell",
+      "congue@eulacusQuisque.co.uk",
+      73,
+      "Norfolk"
+    ],
+    [
+      "Wendy",
+      "urna.Vivamus.molestie@Maecenasiaculisaliquet.co.uk",
+      70,
+      "Herne"
+    ],
+    [
+      "Blythe",
+      "imperdiet.nec.leo@atortor.net",
+      73,
+      "Dunfermline"
+    ],
+    [
+      "Whilemina",
+      "rutrum.magna@maurisutmi.org",
+      55,
+      "Springdale"
+    ],
+    [
+      "Ocean",
+      "turpis.vitae@nonlorem.ca",
+      19,
+      "Beerse"
+    ],
+    [
+      "Josiah",
+      "cursus.a@DonecegestasDuis.net",
+      66,
+      "Nemoli"
+    ],
+    [
+      "Drew",
+      "quam.dignissim.pharetra@risusNuncac.net",
+      71,
+      "Nizamabad"
+    ],
+    [
+      "Unity",
+      "Curabitur.ut@vitaeposuere.org",
+      54,
+      "Hennigsdorf"
+    ],
+    [
+      "Clark",
+      "sodales.elit@Cumsociisnatoque.edu",
+      59,
+      "Covington"
+    ],
+    [
+      "Xandra",
+      "mauris.blandit.mattis@dis.org",
+      57,
+      "GozŽe"
+    ],
+    [
+      "Jasmine",
+      "mattis.Cras@luctuslobortisClass.ca",
+      39,
+      "Gubbio"
+    ],
+    [
+      "Maile",
+      "ligula@anequeNullam.ca",
+      63,
+      "Neustadt"
+    ],
+    [
+      "Tallulah",
+      "elit.pretium.et@magna.org",
+      26,
+      "Lloydminster"
+    ],
+    [
+      "Wing",
+      "leo.Cras@Donec.org",
+      17,
+      "Sint-Jans-Molenbeek"
+    ],
+    [
+      "Christopher",
+      "Aliquam.fringilla@luctuslobortisClass.com",
+      71,
+      "Jackson"
+    ],
+    [
+      "Colby",
+      "pede@cursusnonegestas.net",
+      24,
+      "Jamnagar"
+    ]
+  ]
+}
+
+let d2 = d.data.map(e => {
+  let ent = {}, key = e[0]
+  e.forEach((v, i) => {
+    const k = d.cols[i]
+    if (k == 'email') {
+      // ignore
+      return
+    } else if (k == 'name') {
+      key = v.split(/\b/)[0].toLowerCase()
+    }
+    ent[k] = v
+  })
+  return [key, ent]
+})
+
+d3 = [
+{"id":"jreed0","name":"Joan","email":"jstephens0@merriam-webster.com","city":"Piraju","age":47},
+{"id":"igibson1","name":"Irene","email":"icastillo1@geocities.jp","city":"Kadujajar","age":19},
+{"id":"sjohnston2","name":"Susan","email":"sgraham2@census.gov","city":"Bourges","age":49},
+{"id":"ncarroll3","name":"Nancy","email":"nlawrence3@hp.com","city":"Karlskoga","age":37},
+{"id":"aparker4","name":"Arthur","email":"atucker4@hud.gov","city":"Altos","age":49},
+{"id":"mmurphy5","name":"Margaret","email":"mwelch5@cdbaby.com","city":"General Arenales","age":28},
+{"id":"adavis6","name":"Amanda","email":"aweaver6@aboutads.info","city":"Kosai-shi","age":18},
+{"id":"tmyers7","name":"Terry","email":"tmurray7@lycos.com","city":"Victoria","age":44},
+{"id":"twagner8","name":"Tina","email":"tdunn8@miitbeian.gov.cn","city":"Emnambithi-Ladysmith","age":27},
+{"id":"idixon9","name":"Irene","email":"iwoods9@ted.com","city":"Shangcunba","age":39},
+{"id":"jmillsa","name":"Johnny","email":"jfranklina@istockphoto.com","city":"Jiaojie","age":31},
+{"id":"tgordonb","name":"Timothy","email":"tstewartb@newyorker.com","city":"Siyang","age":29},
+{"id":"bromeroc","name":"Benjamin","email":"bmorrisc@bloomberg.com","city":"Itápolis","age":56},
+{"id":"cwestd","name":"Catherine","email":"cgibsond@utexas.edu","city":"Vokhaïkó","age":36},
+{"id":"jrobinsone","name":"Janet","email":"jharrisone@taobao.com","city":"Ahar","age":37},
+{"id":"rmorenof","name":"Roy","email":"rhudsonf@latimes.com","city":"Qiangtou","age":63},
+{"id":"acollinsg","name":"Anthony","email":"alewisg@booking.com","city":"Changlong","age":62},
+{"id":"gwalkerh","name":"Gloria","email":"gmorrish@weather.com","city":"Strogino","age":41},
+{"id":"jmedinai","name":"Jane","email":"jhawkinsi@storify.com","city":"Purwosari","age":53},
+{"id":"jgrantj","name":"Jose","email":"jfullerj@surveymonkey.com","city":"Wielka Wieś","age":46},
+{"id":"rmoorek","name":"Robin","email":"rramosk@google.ca","city":"Nianyushan","age":38},
+{"id":"kmorganl","name":"Kathleen","email":"klynchl@businessinsider.com","city":"Les Abymes","age":53},
+{"id":"hbowmanm","name":"Helen","email":"hmorrisonm@scribd.com","city":"Svetlograd","age":58},
+{"id":"rrossn","name":"Ruby","email":"rnelsonn@lulu.com","city":"Fonseca","age":65},
+{"id":"wsullivano","name":"Walter","email":"wmendozao@bandcamp.com","city":"Quintão","age":40},
+{"id":"cwhitep","name":"Carlos","email":"csimpsonp@amazon.com","city":"Hengqu","age":28},
+{"id":"mjacobsq","name":"Melissa","email":"msullivanq@zdnet.com","city":"Banjar Banyualit","age":47},
+{"id":"jchapmanr","name":"Jean","email":"jtuckerr@1688.com","city":"Yuecheng","age":24},
+{"id":"lolsons","name":"Lillian","email":"ldunns@jiathis.com","city":"Vorontsovka","age":60},
+{"id":"agomezt","name":"Anthony","email":"aturnert@oaic.gov.au","city":"Karangsari","age":23},
+{"id":"shudsonu","name":"Sean","email":"smeyeru@netlog.com","city":"Semuda","age":54},
+{"id":"hbowmanv","name":"Harry","email":"hbradleyv@woothemes.com","city":"Wenchi","age":20},
+{"id":"dbishopw","name":"Debra","email":"drogersw@vinaora.com","city":"Banbalah","age":61},
+{"id":"mgilbertx","name":"Martha","email":"mmoorex@seesaa.net","city":"Nanshi","age":46},
+{"id":"krobertsony","name":"Kimberly","email":"kfreemany@nsw.gov.au","city":"Gaojiazhuang","age":38},
+{"id":"kspencerz","name":"Kathryn","email":"khowardz@dyndns.org","city":"Bantawora","age":28},
+{"id":"wsanchez10","name":"Wanda","email":"wchapman10@vistaprint.com","city":"Vänersborg","age":25},
+{"id":"gcruz11","name":"Gerald","email":"gmurray11@desdev.cn","city":"Sidzina","age":32},
+{"id":"jclark12","name":"Justin","email":"jprice12@godaddy.com","city":"Nagua","age":41},
+{"id":"wwallace13","name":"Willie","email":"whunt13@fema.gov","city":"Hougong","age":35},
+{"id":"smorales14","name":"Sean","email":"scooper14@about.me","city":"Magdalena","age":39},
+{"id":"jgraham15","name":"Jeffrey","email":"jarnold15@quantcast.com","city":"Byala","age":24},
+{"id":"erose16","name":"Emily","email":"epowell16@aol.com","city":"Vecpiebalga","age":45},
+{"id":"hfields17","name":"Helen","email":"hmyers17@vimeo.com","city":"Hucheng","age":20},
+{"id":"bcollins18","name":"Betty","email":"bhill18@usa.gov","city":"Ponggeok","age":54},
+{"id":"rfreeman19","name":"Raymond","email":"rmorgan19@google.com.hk","city":"Nelspruit","age":36},
+{"id":"scampbell1a","name":"Stephanie","email":"shall1a@netvibes.com","city":"Nong Khae","age":24},
+{"id":"pgomez1b","name":"Phyllis","email":"plawson1b@gmpg.org","city":"Kérkyra","age":53},
+{"id":"jwood1c","name":"Judith","email":"jweaver1c@squidoo.com","city":"Hai Riêng","age":37},
+{"id":"wgraham1d","name":"Wayne","email":"whayes1d@lycos.com","city":"Iza","age":64},
+{"id":"ataylor1e","name":"Amanda","email":"amendoza1e@multiply.com","city":"Ostrowite","age":63},
+{"id":"shunter1f","name":"Susan","email":"shall1f@ihg.com","city":"Potolo","age":60},
+{"id":"mfields1g","name":"Mark","email":"mstevens1g@ihg.com","city":"Marāveh Tappeh","age":34},
+{"id":"mfreeman1h","name":"Melissa","email":"malexander1h@amazon.com","city":"Amper","age":25},
+{"id":"rroberts1i","name":"Randy","email":"raustin1i@cornell.edu","city":"Consuelo","age":24},
+{"id":"rmiller1j","name":"Randy","email":"rrobinson1j@e-recht24.de","city":"Yushugou","age":62},
+{"id":"pdiaz1k","name":"Phyllis","email":"polson1k@businessinsider.com","city":"Caeté","age":40},
+{"id":"tramos1l","name":"Todd","email":"tstewart1l@so-net.ne.jp","city":"Lebedyn","age":46},
+{"id":"ccrawford1m","name":"Christine","email":"cvasquez1m@irs.gov","city":"Sobradinho","age":62},
+{"id":"eruiz1n","name":"Emily","email":"ebarnes1n@vinaora.com","city":"Guanghai","age":51},
+{"id":"amorales1o","name":"Anthony","email":"aoliver1o@tiny.cc","city":"Helie","age":43},
+{"id":"cwallace1p","name":"Catherine","email":"criley1p@disqus.com","city":"Los Córdobas","age":44},
+{"id":"jnichols1q","name":"Joyce","email":"jwagner1q@qq.com","city":"Trincomalee","age":53},
+{"id":"kperkins1r","name":"Kenneth","email":"kpeters1r@techcrunch.com","city":"Ostrów Mazowiecka","age":35},
+{"id":"areynolds1s","name":"Anthony","email":"afranklin1s@delicious.com","city":"Birao","age":26},
+{"id":"rmartin1t","name":"Raymond","email":"rnichols1t@mapy.cz","city":"Santa Cecília","age":37},
+{"id":"hhenderson1u","name":"Howard","email":"hross1u@nytimes.com","city":"Mkushi","age":56},
+{"id":"iburton1v","name":"Irene","email":"imorgan1v@goodreads.com","city":"Hongdun","age":41},
+{"id":"mstevens1w","name":"Margaret","email":"mmendoza1w@cpanel.net","city":"Temirtau","age":50},
+{"id":"athompson1x","name":"Andrew","email":"aprice1x@ow.ly","city":"Tamamura","age":62},
+{"id":"sdunn1y","name":"Steve","email":"sbrooks1y@cargocollective.com","city":"Saryshaghan","age":40},
+{"id":"prussell1z","name":"Phyllis","email":"pwagner1z@gmpg.org","city":"Anchorage","age":23},
+{"id":"rhansen20","name":"Roy","email":"rdixon20@reuters.com","city":"Damnica","age":27},
+{"id":"jcook21","name":"Julie","email":"jturner21@csmonitor.com","city":"Offa","age":40},
+{"id":"rtaylor22","name":"Ruth","email":"rhart22@who.int","city":"Menglie","age":23},
+{"id":"bprice23","name":"Betty","email":"brivera23@shutterfly.com","city":"Mellila","age":55},
+{"id":"mross24","name":"Melissa","email":"mgarza24@wikia.com","city":"Villefranche-sur-Mer","age":24},
+{"id":"jarnold25","name":"Jesse","email":"jthompson25@ucoz.com","city":"Hejia","age":41},
+{"id":"cdaniels26","name":"Christopher","email":"cperkins26@archive.org","city":"Guilhabreu","age":56},
+{"id":"randerson27","name":"Ruth","email":"rharper27@imageshack.us","city":"Joroan","age":41},
+{"id":"wmyers28","name":"William","email":"wmitchell28@omniture.com","city":"Pantaibesar","age":62},
+{"id":"dray29","name":"Douglas","email":"dblack29@mtv.com","city":"Orahovac","age":23},
+{"id":"jaustin2a","name":"Janice","email":"jnelson2a@dell.com","city":"Munka-Ljungby","age":53},
+{"id":"mcruz2b","name":"Marilyn","email":"mkim2b@squidoo.com","city":"Mwene-Ditu","age":64},
+{"id":"smason2c","name":"Sharon","email":"srussell2c@boston.com","city":"Ibara","age":62},
+{"id":"rarmstrong2d","name":"Ronald","email":"randrews2d@tinyurl.com","city":"Tamansari","age":47},
+{"id":"lmiller2e","name":"Lois","email":"lreyes2e@taobao.com","city":"Tiglauigan","age":50},
+{"id":"rcunningham2f","name":"Ryan","email":"rperez2f@squidoo.com","city":"Danxia","age":32},
+{"id":"dgriffin2g","name":"Denise","email":"ddaniels2g@nydailynews.com","city":"Xiawa","age":54},
+{"id":"dhunt2h","name":"Donna","email":"dsnyder2h@huffingtonpost.com","city":"Aoufous","age":57},
+{"id":"wmorrison2i","name":"Wayne","email":"wburns2i@a8.net","city":"Dobra","age":28},
+{"id":"jshaw2j","name":"Judy","email":"jolson2j@netvibes.com","city":"Kurihashi","age":37},
+{"id":"mgrant2k","name":"Michael","email":"mdixon2k@dion.ne.jp","city":"Gonābād","age":50},
+{"id":"aday2l","name":"Alan","email":"asanders2l@nydailynews.com","city":"Matsubara","age":50},
+{"id":"bwalker2m","name":"Brandon","email":"bmedina2m@1und1.de","city":"Główczyce","age":51},
+{"id":"kpayne2n","name":"Kathryn","email":"kreid2n@techcrunch.com","city":"Pingshan","age":36},
+{"id":"cstephens2o","name":"Craig","email":"cwilliams2o@who.int","city":"Marabá","age":55},
+{"id":"fdean2p","name":"Fred","email":"fford2p@netscape.com","city":"Oslob","age":50},
+{"id":"sburke2q","name":"Shirley","email":"saustin2q@unesco.org","city":"Saint-Lambert-de-Lauzon","age":48},
+{"id":"jking2r","name":"Joyce","email":"jtucker2r@prnewswire.com","city":"Bonoua","age":58},
+]
+
+// d2.forEach(e => {
+//   console.log('[' + JSON.stringify(e[0]) + ', {' +
+//     Object.keys(e[1]).map(k => k + ': ' + JSON.stringify(e[1][k])).join(', ') +
+//     '}],')
+// })
+
+d3.forEach(e => {
+  let id = e.id
+  delete e.id
+  console.log('[' + JSON.stringify(id) + ', {' +
+    Object.keys(e).map(k => k + ': ' + JSON.stringify(e[k])).join(', ') +
+    '}],')
+})
