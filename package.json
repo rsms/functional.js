@@ -1,5 +1,42 @@
 {
+  "name": "func-js",
+  "version": "0.1.0",
+  "description": "Work in a functional style with JavaScript and TypeScript",
+  "main": "dist/functional.js",
+  "typings": "dist/functional.d.ts",
+  "directories": {
+    "dist": "dist"
+  },
+  "files": [
+    "repl",
+    "tsconfig.json",
+    "functional.ts",
+    "example.ts",
+    "dist/functional.js",
+    "dist/functional.d.ts",
+    "dist/functional.js.map",
+    "dist/example.js"
+  ],
+  "keywords": [
+    "functional"
+  ],
+  "author": "Rasmus Andersson <me@rsms.me>",
+  "license": "MIT",
+  "scripts": {
+    "test": "tsc && node dist/example.js >/dev/null && echo 'tests ok'",
+    "build": "tsc",
+    "prepublish": "tsc && node dist/example.js >/dev/null && echo 'tests ok'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rsms/functional.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rsms/functional.js/issues"
+  },
+  "homepage": "https://github.com/rsms/functional.js#readme",
   "devDependencies": {
-    "source-map-support": "^0.4.10"
+    "source-map-support": "^0.4.10",
+    "typescript": "^2.2.1"
   }
 }

@@ -23,6 +23,8 @@ $ ./repl
 ❯
 ```
 
+From NPM: [`yarn add func-js`](https://www.npmjs.com/package/func-js)
+
 ## Introduction
 
 Let's start with something simple. Here's a map of some imaginary "users":
