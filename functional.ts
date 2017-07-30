@@ -19,7 +19,7 @@ export function seq<K,V>(
   s :Iterator<V>|Iterable<V>|{[key:string]:V}|IteratorCons<V>|V[],
   allProperties? :boolean)
 {
-  if (s[Symbol.iterator]) { return s }
+  if ((s as Iterable<V>)[Symbol.iterator]) { return s }
   switch (typeof s) {
     case 'function': return { [Symbol.iterator]: s }
     case 'object': {
@@ -33,11 +33,11 @@ export function seq<K,V>(
       return {
         [Symbol.iterator]: allProperties ?
           function* () {
-            for (let k in s) { yield [k, s[k]] }
+            for (let k in s) { yield [k, (s as any)[k]] }
           } :
           function* () {
             for (let k in s) {
-              if (s.hasOwnProperty(k)) { yield [k, s[k]] }
+              if (s.hasOwnProperty(k)) { yield [k, (s as any)[k]] }
             }
           }
       }
@@ -103,7 +103,7 @@ export function filter<T>(f :(v :T)=>boolean, s :Seq<T>) :Seq<T> {
 export function zipf<A,B,R>(f :(v1:A, v2:B)=>R, s1 :Seq<A>, s2 :Seq<B>) :Seq<R>;
 export function zipf<A,B,C,R>(f :(v1:A, v2:B, v3:C)=>R, s1 :Seq<A>, s2 :Seq<B>, s3 :Seq<C>) :Seq<R>;
 export function zipf<R>(f :(...v:any[])=>R, ...s :Seq<any>[]) :Seq<any>;
-export function zipf<R>(f, ...s) {
+export function zipf<R>(f :Function, ...s :Seq<any>[]) {
   if (s.length < 2) { throw new Error('zip requires at least two arguments') }
   return { [Symbol.iterator]: s.length > 2 ?
     function* () {
@@ -136,7 +136,7 @@ export function zip<A,B>(s1 :Seq<A>, s2 :Seq<B>) :Seq<[A,B]>;
 export function zip<A,B,C>(s1 :Seq<A>, s2 :Seq<B>, s3 :Seq<C>) :Seq<[A,B,C]>;
 export function zip<A,B,C,D>(s1 :Seq<A>, s2 :Seq<B>, s3 :Seq<C>, s4 :Seq<C>) :Seq<[A,B,C,D]>;
 export function zip(...s :Seq<any>[]) :Seq<[any]>;
-export function zip(...s) {
+export function zip(...s :Seq<any>[]) {
   if (s.length < 2) { throw new Error('zip requires at least two arguments') }
   return (s.length > 2 ?
     zipf((...v) => v, ...s) :
@@ -189,16 +189,20 @@ export function nth<T>(n :number, s :Seq<T>) :T|null {
  * If initial value of `acc` is not provided, the first value of s will be
  * used instead. Returns null if s is empty and no `acc` was provided.
  */
-export function fold<T,R>(f :(acc :T, v :T)=>R, s :Seq<T>) :R;
-export function fold<T,R>(f :(acc :R, v :T)=>R, s :Seq<T>, acc :R) :R;
-export function fold<T,R>(f, s, acc?) {
+export function fold<T,R>(f :(acc :T, v :T)=>R, s :Seq<T>) :R|undefined
+export function fold<T,R>(f :(acc :R, v :T)=>R, s :Seq<T>, acc :R) :R
+
+export function fold<T,R>(f :(acc :T|R, v :T)=>R, s :Seq<T>, acc? :R) :T|R|undefined {
   let v, i = s[Symbol.iterator]()
+  let _acc :T|R
   if (acc === undefined) {
-    if ((v = i.next()).done) { return null }
-    acc = v.value
+    if ((v = i.next()).done) { return undefined }
+    _acc = v.value
+  } else {
+    _acc = acc
   }
   while (!(v = i.next()).done) {
-    acc = f(acc, v.value)
+    acc = f(_acc, v.value)
   }
   return acc
 }
@@ -206,20 +210,24 @@ export function fold<T,R>(f, s, acc?) {
 /// Fold values of s from right to left into accumulator.
 /// If initial value of `acc` is not provided, the first value of s will be
 /// used instead. Returns null if s is empty and no `acc` was provided.
-export function foldr<T,R>(f :(acc :T, v :T)=>R, s :Seq<T>) :R;
-export function foldr<T,R>(f :(acc :R, v :T)=>R, s :Seq<T>, acc :R) :R;
-export function foldr<T,R>(f, s, acc?) {
+export function foldr<T,R>(f :(acc :T, v :T)=>R, s :Seq<T>) :R|undefined
+export function foldr<T,R>(f :(acc :R, v :T)=>R, s :Seq<T>, acc :R) :R
+
+export function foldr<T,R>(f :(acc :T|R, v :T)=>R, s :Seq<T>, acc? :R) :T|R|undefined {
   let i = s[Symbol.iterator]()
+  let _acc :T|R
   if (acc === undefined) {
     let v = i.next()
-    if (v.done) { return null }
-    acc = v.value
+    if (v.done) { return undefined }
+    _acc = v.value
+  } else {
+    _acc = acc
   }
-  function a(i, acc, f) {
+  function a(i :Iterator<T>, acc :T|R, f :(acc :T|R, v :T|R)=>R) :T|R {
     const v = i.next()
     return v.done ? acc : f(a(i, v.value, f), acc)
   }
-  return a(i, acc, f)
+  return a(i, _acc, f)
 }
 
 export function reverse<T>(s :Seq<T>) :Seq<T> {
@@ -228,7 +236,7 @@ export function reverse<T>(s :Seq<T>) :Seq<T> {
       function* () {
         // efficient reverse iteration of array
         let i = (s as Array<T>).length
-        while (i > 0) { yield s[--i] }
+        while (i > 0) { yield (s as Array<T>)[--i] }
       } :
     // fallback for any Seq, using a stack buffer:
       function* () {
