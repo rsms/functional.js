@@ -1,6 +1,6 @@
 {
   "name": "func-js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Work in a functional style with JavaScript and TypeScript",
   "main": "dist/functional.js",
   "typings": "dist/functional.d.ts",
